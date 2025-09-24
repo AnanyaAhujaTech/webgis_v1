@@ -59,11 +59,17 @@ map.on('load', () => {
     });
   });
 
-  // Layer toggle logic (only states + districts now)
+  // Layer toggle logic
   document.getElementById('toggle-states').addEventListener('change', e => {
     map.setLayoutProperty('states', 'visibility', e.target.checked ? 'visible' : 'none');
   });
   document.getElementById('toggle-districts').addEventListener('change', e => {
     map.setLayoutProperty('districts', 'visibility', e.target.checked ? 'visible' : 'none');
+  });
+  document.getElementById('toggle-rivers').addEventListener('change', e => {
+    map.setLayoutProperty('rivers', 'visibility', e.target.checked ? 'visible' : 'none');
+  });
+  document.getElementById('toggle-roads').addEventListener('change', e => {
+    map.setLayoutProperty('roads', 'visibility', e.target.checked ? 'visible' : 'none');
   });
 });
