@@ -2,14 +2,12 @@ body {
   margin: 0;
   padding: 0;
 }
-
 #map {
   position: absolute;
   top: 0;
   bottom: 0;
   width: 100%;
 }
-
 #menu {
   position: absolute;
   background: white;
@@ -21,3 +19,4 @@ body {
   box-shadow: 0 1px 4px rgba(0,0,0,0.3);
   z-index: 1;
 }
+
