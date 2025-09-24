@@ -16,11 +16,11 @@ map.addControl(new maplibregl.NavigationControl(), 'top-right');
 map.on('load', () => {
   // Define layers
   const layers = [
-    { id: 'india', file: 'india.geojson', type: 'line', color: '#000000', width: 2 },
-    { id: 'states', file: 'states.geojson', type: 'line', color: '#3333cc', width: 1.5 },
-    { id: 'districts', file: 'districts.geojson', type: 'line', color: '#999999', width: 0.8 },
-    { id: 'rivers', file: 'rivers.geojson', type: 'line', color: '#0000ff', width: 1 },
-    { id: 'roads', file: 'roads.geojson', type: 'line', color: '#ff6600', width: 1 }
+    { id: 'india', file: './india.geojson', type: 'line', color: '#000000', width: 2 },
+    { id: 'states', file: './states.geojson', type: 'line', color: '#3333cc', width: 1.5 },
+    { id: 'districts', file: './districts.geojson', type: 'line', color: '#999999', width: 0.8 },
+    { id: 'rivers', file: './rivers.geojson', type: 'line', color: '#0000ff', width: 1 },
+    { id: 'roads', file: './roads.geojson', type: 'line', color: '#ff6600', width: 1 }
   ];
 
   // Add sources and layers
