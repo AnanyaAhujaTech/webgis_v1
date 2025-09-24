@@ -19,7 +19,8 @@ map.on('load', () => {
     { id: 'india', file: 'india.geojson', type: 'line', color: '#000000', width: 2 },
     { id: 'states', file: 'states.geojson', type: 'line', color: '#3333cc', width: 1.5 },
     { id: 'districts', file: 'districts.geojson', type: 'line', color: '#999999', width: 0.8 },
-    { id: 'rivers', file: 'rivers.geojson', type: 'line', color: '#0000ff', width: 1 }
+    { id: 'rivers', file: 'rivers.geojson', type: 'line', color: '#0000ff', width: 1 },
+    { id: 'roads', file: 'roads.geojson', type: 'line', color: '#ff6600', width: 1 }
   ];
 
   // Add sources and layers
@@ -40,9 +41,11 @@ map.on('load', () => {
   // Layer toggle logic
   layers.forEach(layer => {
     const checkbox = document.getElementById('toggle-' + layer.id);
-    checkbox.addEventListener('change', e => {
-      map.setLayoutProperty(layer.id, 'visibility', e.target.checked ? 'visible' : 'none');
-    });
+    if (checkbox) {
+      checkbox.addEventListener('change', e => {
+        map.setLayoutProperty(layer.id, 'visibility', e.target.checked ? 'visible' : 'none');
+      });
+    }
   });
 
   // Example popups for states
@@ -53,6 +56,7 @@ map.on('load', () => {
     "Telangana": "Urban heat island effect rising in Hyderabad."
   };
 
+  // Popups on click for states
   map.on('click', 'states', e => {
     const stateName = e.features[0].properties.NAME_1;
     if (insights[stateName]) {
@@ -63,6 +67,7 @@ map.on('load', () => {
     }
   });
 
+  // Change cursor on hover
   map.on('mouseenter', 'states', () => map.getCanvas().style.cursor = 'pointer');
   map.on('mouseleave', 'states', () => map.getCanvas().style.cursor = '');
 });
