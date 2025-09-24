@@ -75,7 +75,7 @@ map.on('load', () => {
 
   // Click event on states layer
   map.on('click', 'states', e => {
-    const stateName = e.features[0].properties.MadhyaPradesh; // assumes NAME_1 in GeoJSON
+    const stateName = e.features[0].properties.NAME_1;
     if (insights[stateName]) {
       new maplibregl.Popup()
         .setLngLat(e.lngLat)
