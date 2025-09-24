@@ -1,10 +1,25 @@
-// Initialize map (no raster layer)
+// Initialize map with OSM raster background
 const map = new maplibregl.Map({
   container: 'map',
   style: {
     version: 8,
-    sources: {},
-    layers: []
+    sources: {
+      'osm-tiles': {
+        type: 'raster',
+        tiles: ['https://a.tile.openstreetmap.org/{z}/{x}/{y}.png'],
+        tileSize: 256,
+        attribution: '© OpenStreetMap contributors'
+      }
+    },
+    layers: [
+      {
+        id: 'osm-tiles',
+        type: 'raster',
+        source: 'osm-tiles',
+        minzoom: 0,
+        maxzoom: 19
+      }
+    ]
   },
   center: [78.9629, 22.5937], // Center of India
   zoom: 4
@@ -14,7 +29,7 @@ const map = new maplibregl.Map({
 map.addControl(new maplibregl.NavigationControl(), 'top-right');
 
 map.on('load', () => {
-  // Layer definitions
+  // Vector layers
   const layers = [
     { id: 'india', file: './india.geojson', color: '#000000', width: 2 },
     { id: 'states', file: './states.geojson', color: '#3333cc', width: 1.5 },
@@ -31,7 +46,7 @@ map.on('load', () => {
         // Add source
         map.addSource(layer.id, { type: 'geojson', data: data });
 
-        // Add layer
+        // Add layer above OSM
         map.addLayer({
           id: layer.id,
           type: 'line',
@@ -48,7 +63,7 @@ map.on('load', () => {
           });
         }
 
-        // Example popups
+        // Popups for interactive layers
         if (layer.id === 'states') {
           const insights = {
             "Madhya Pradesh": "High deforestation risk detected in central regions.",
@@ -65,12 +80,10 @@ map.on('load', () => {
                 .addTo(map);
             }
           });
-
           map.on('mouseenter', 'states', () => map.getCanvas().style.cursor = 'pointer');
           map.on('mouseleave', 'states', () => map.getCanvas().style.cursor = '');
         }
 
-        // Popups for rivers
         if (layer.id === 'rivers') {
           map.on('click', 'rivers', e => {
             const riverName = e.features[0].properties.NAME || e.features[0].properties.name;
@@ -85,7 +98,6 @@ map.on('load', () => {
           map.on('mouseleave', 'rivers', () => map.getCanvas().style.cursor = '');
         }
 
-        // Popups for roads
         if (layer.id === 'roads') {
           map.on('click', 'roads', e => {
             const roadName = e.features[0].properties.NAME || e.features[0].properties.name;
@@ -100,7 +112,6 @@ map.on('load', () => {
           map.on('mouseleave', 'roads', () => map.getCanvas().style.cursor = '');
         }
 
-        // Popups for districts
         if (layer.id === 'districts') {
           map.on('click', 'districts', e => {
             const districtName = e.features[0].properties.NAME_2 || e.features[0].properties.name;
