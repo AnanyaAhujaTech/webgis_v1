@@ -1,4 +1,3 @@
-// Initialize map
 const map = new maplibregl.Map({
   container: 'map',
   style: {
@@ -11,55 +10,65 @@ const map = new maplibregl.Map({
         attribution: '© OpenStreetMap contributors'
       }
     },
-    layers: [
-      {
-        id: 'osm-tiles',
-        type: 'raster',
-        source: 'osm-tiles',
-        minzoom: 0,
-        maxzoom: 19
-      }
-    ]
+    layers: [{
+      id: 'osm-tiles',
+      type: 'raster',
+      source: 'osm-tiles',
+      minzoom: 0,
+      maxzoom: 19
+    }]
   },
-  center: [78.9629, 22.5937], // Center of India
+  center: [78.9629, 22.5937],
   zoom: 4
 });
 
-// Add navigation control
 map.addControl(new maplibregl.NavigationControl(), 'top-right');
 
+// Helper function to fetch GeoJSON and add source+layer
+function addLineLayer(map, layerDef) {
+  fetch(layerDef.file)
+    .then(response => {
+      if (!response.ok) throw new Error('Network response was not ok');
+      return response.json();
+    })
+    .then(data => {
+      if (!map.getSource(layerDef.id)) {
+        map.addSource(layerDef.id, {
+          type: 'geojson',
+          data: data
+        });
+      } else {
+        map.getSource(layerDef.id).setData(data);
+      }
+
+      map.addLayer({
+        id: layerDef.id,
+        type: 'line',
+        source: layerDef.id,
+        layout: {
+          visibility: layerDef.visible ? 'visible' : 'none'
+        },
+        paint: {
+          'line-color': layerDef.color,
+          'line-width': layerDef.width
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Failed to load GeoJSON', layerDef.file, error);
+    });
+}
+
 map.on('load', () => {
-  // Define layers
   const layers = [
-    { id: 'india', file: 'india.geojson', type: 'line', color: '#000', width: 2, visible: true },
-    { id: 'states', file: 'states.geojson', type: 'line', color: '#3333cc', width: 1.5, visible: true },
-    { id: 'districts', file: 'districts.geojson', type: 'line', color: '#999999', width: 0.8, visible: false },
-    { id: 'rivers', file: 'rivers.geojson', type: 'line', color: '#0066ff', width: 1.2, visible: true },
-    { id: 'roads', file: 'roads.geojson', type: 'line', color: '#cc0000', width: 1.2, visible: true }
+    { id: 'states',    file: 'states.geojson',    color: '#3333cc', width: 1.5, visible: true },
+    { id: 'districts', file: 'districts.geojson', color: '#999999', width: 0.8, visible: false },
+    { id: 'rivers',    file: 'rivers.geojson',    color: '#0066ff', width: 1.2, visible: true },
+    { id: 'roads',     file: 'roads.geojson',     color: '#cc0000', width: 1.2, visible: true }
   ];
 
-  // Add sources and layers
-  layers.forEach(layer => {
-    map.addSource(layer.id, {
-      type: 'geojson',
-      data: layer.file
-    });
+  layers.forEach(layer => addLineLayer(map, layer));
 
-    map.addLayer({
-      id: layer.id,
-      type: layer.type,
-      source: layer.id,
-      layout: {
-        visibility: layer.visible ? 'visible' : 'none'
-      },
-      paint: {
-        'line-color': layer.color,
-        'line-width': layer.width
-      }
-    });
-  });
-
-  // Layer toggle logic
   document.getElementById('toggle-states').addEventListener('change', e => {
     map.setLayoutProperty('states', 'visibility', e.target.checked ? 'visible' : 'none');
   });
