@@ -32,8 +32,7 @@ map.on('load', () => {
   // Define layers
   const layers = [
     { id: 'india', file: 'india.geojson', type: 'line', color: '#000', width: 2, visible: true },
-    { id: 'states', file: 'states.geojson', type: 'line', color: '#3333cc', width: 1.5, visible: true },
-    { id: 'districts', file: 'districts.geojson', type: 'line', color: '#999999', width: 0.8, visible: false }
+    { id: 'states', file: 'states.geojson', type: 'line', color: '#3333cc', width: 1.5, visible: true }
   ];
 
   // Add sources and layers
@@ -60,9 +59,6 @@ map.on('load', () => {
   // Layer toggle logic
   document.getElementById('toggle-states').addEventListener('change', e => {
     map.setLayoutProperty('states', 'visibility', e.target.checked ? 'visible' : 'none');
-  });
-  document.getElementById('toggle-districts').addEventListener('change', e => {
-    map.setLayoutProperty('districts', 'visibility', e.target.checked ? 'visible' : 'none');
   });
 
   // --- Hardcoded ML insights ---
