@@ -31,11 +31,11 @@ map.addControl(new maplibregl.NavigationControl(), 'top-right');
 map.on('load', () => {
   // Define layers
   const layers = [
-    { id: 'india', file: 'data/india.geojson', type: 'line', color: '#000', width: 2, visible: true },
-    { id: 'states', file: 'data/states.geojson', type: 'line', color: '#3333cc', width: 1.5, visible: true },
-    { id: 'districts', file: 'data/districts.geojson', type: 'line', color: '#999999', width: 0.8, visible: false },
-    { id: 'rivers', file: 'data/rivers.geojson', type: 'line', color: '#0066ff', width: 1.2, visible: true },
-    { id: 'roads', file: 'data/roads.geojson', type: 'line', color: '#cc0000', width: 1.2, visible: true }
+    { id: 'india', file: 'india.geojson', type: 'line', color: '#000', width: 2, visible: true },
+    { id: 'states', file: 'states.geojson', type: 'line', color: '#3333cc', width: 1.5, visible: true },
+    { id: 'districts', file: 'districts.geojson', type: 'line', color: '#999999', width: 0.8, visible: false },
+    { id: 'rivers', file: 'rivers.geojson', type: 'line', color: '#0066ff', width: 1.2, visible: true },
+    { id: 'roads', file: 'roads.geojson', type: 'line', color: '#cc0000', width: 1.2, visible: true }
   ];
 
   // Add sources and layers
