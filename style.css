@@ -1,9 +1,6 @@
-/* Full page map */
-html, body {
+body {
   margin: 0;
   padding: 0;
-  height: 100%;
-  font-family: Arial, sans-serif;
 }
 
 #map {
@@ -13,21 +10,14 @@ html, body {
   width: 100%;
 }
 
-/* Layer toggle menu */
 #menu {
   position: absolute;
-  background: rgba(255, 255, 255, 0.9);
+  background: white;
   padding: 10px;
-  font-size: 14px;
+  font-family: sans-serif;
   top: 10px;
   left: 10px;
   border-radius: 5px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
   z-index: 1;
-}
-
-#menu label {
-  display: block;
-  margin-bottom: 5px;
-  cursor: pointer;
 }
