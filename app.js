@@ -1,103 +1,96 @@
-const map = new maplibregl.Map({
-  container: 'map',
-  style: {
-    version: 8,
-    sources: {
-      'osm-tiles': {
-        type: 'raster',
-        tiles: ['https://a.tile.openstreetmap.org/{z}/{x}/{y}.png'],
-        tileSize: 256,
-        attribution: '© OpenStreetMap contributors'
-      }
+document.addEventListener('DOMContentLoaded', () => {
+  const map = L.map('map').setView([22.5937, 78.9629], 5);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  let currentLayer = null;
+
+  // State colors and popup text
+  const stateData = {
+    'madhya-pradesh.geojson': { 
+      color: '#1f78b4', fillColor: '#a6cee3', fillOpacity: 0.3, 
+      popup: 'Number of verified claims: 56<br>Number of pending claims: 17<br>Number of water bodies: 3<br>Agricultural Land: 767 acres<br>Forest Land: 456 acres' 
     },
-    layers: [
-      {
-        id: 'osm-tiles',
-        type: 'raster',
-        source: 'osm-tiles',
-        minzoom: 0,
-        maxzoom: 19
-      }
-    ]
-  },
-  center: [78.9629, 22.5937], // Center of India
-  zoom: 4
-});
+    'telangana.geojson': { 
+      color: '#33a02c', fillColor: '#b2df8a', fillOpacity: 0.3, 
+      popup: "Number of verified claims: 47<br>Number of pending claims: 62<br>Number of water bodies: 5<br>Agricultural Land: 3782 acres<br>Forest Land: 329 acres" 
+    },
+    'tripura.geojson': { 
+      color: '#e31a1c', fillColor: '#fb9a99', fillOpacity: 0.3, 
+      popup: 'Number of verified claims: 77<br>Number of pending claims: 65<br>Number of water bodies: 2<br>Agricultural Land: 782 acres<br>Forest Land: 399 acres'
+    },
+    'odisha.geojson': { 
+      color: '#ff7f00', fillColor: '#fdbf6f', fillOpacity: 0.3, 
+      popup: 'Number of verified claims: 62<br>Number of pending claims: 12<br>Number of water bodies: 6<br>Agricultural Land: 378 acres<br>Forest Land: 3379 acres' 
+    }
+  };
 
-map.addControl(new maplibregl.NavigationControl(), 'top-right');
+  const StateControl = L.Control.extend({
+    options: { position: 'bottomright' },
+    onAdd: function(map) {
+      const container = L.DomUtil.create('div', 'leaflet-bar');
+      container.style.background = 'white';
+      container.style.padding = '10px';
+      container.style.borderRadius = '6px';
+      container.style.boxShadow = '0 1px 4px rgba(0,0,0,0.3)';
+      container.style.fontSize = '14px';
+      container.style.zIndex = '9999';
 
-const layers = [
-  { id: 'states',    file: 'states.geojson',    color: '#3333cc', width: 1.5, visible: true, popupProperty: 'STATE_NAME' },
-  { id: 'districts', file: 'districts.geojson', color: '#999999', width: 0.8, visible: false, popupProperty: 'DISTRICT_NAME' },
-  { id: 'rivers',    file: 'rivers.geojson',    color: '#0066ff', width: 1.2, visible: true,  popupProperty: 'NAME' },
-  { id: 'roads',     file: 'roads.geojson',     color: '#cc0000', width: 1.2, visible: true,  popupProperty: 'ROAD_NAME' }
-];
+      container.innerHTML = `
+        <form>
+          <label><input type="radio" name="state" value="madhya-pradesh.geojson"> Madhya Pradesh</label><br>
+          <label><input type="radio" name="state" value="telangana.geojson"> Telangana</label><br>
+          <label><input type="radio" name="state" value="tripura.geojson"> Tripura</label><br>
+          <label><input type="radio" name="state" value="odisha.geojson"> Odisha</label>
+        </form>
+      `;
 
-// Load sources and add layers after fetching GeoJSON data
-map.on('load', () => {
-  layers.forEach(layer => {
-    fetch(layer.file)
-      .then(response => {
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        return response.json();
-      })
-      .then(data => {
-        // Add GeoJSON source
-        map.addSource(layer.id, {
-          type: 'geojson',
-          data: data
+      L.DomEvent.disableClickPropagation(container);
+
+      const radios = container.querySelectorAll('input[name="state"]');
+      radios.forEach(radio => {
+        radio.addEventListener('change', () => {
+          const file = radio.value;
+
+          if (currentLayer) map.removeLayer(currentLayer);
+
+          fetch(file)
+            .then(r => {
+              if (!r.ok) throw new Error(`HTTP ${r.status}`);
+              return r.json();
+            })
+            .then(data => {
+              const stateInfo = stateData[file] || { color: 'black', fillColor: 'gray', fillOpacity: 0.3, popup: '' };
+
+              currentLayer = L.geoJSON(data, {
+                style: {
+                  color: stateInfo.color,
+                  fillColor: stateInfo.fillColor,
+                  fillOpacity: stateInfo.fillOpacity,
+                  weight: 2
+                },
+                onEachFeature: function(feature, layer) {
+                  if (stateInfo.popup && stateInfo.popup.trim() !== '') {
+                    layer.bindPopup(`<div style="background:white; color:black; padding:5px 8px; border-radius:4px;">${stateInfo.popup}</div>`);
+                  }
+                }
+              }).addTo(map);
+
+              map.fitBounds(currentLayer.getBounds());
+            })
+            .catch(err => {
+              console.error('Error loading file:', err);
+              alert('Could not load ' + file + '. Check console for details.');
+            });
         });
-
-        // Add layer above 'osm-tiles' raster layer to ensure visibility
-        map.addLayer({
-          id: layer.id,
-          type: 'line',
-          source: layer.id,
-          layout: { visibility: layer.visible ? 'visible' : 'none' },
-          paint: {
-            'line-color': layer.color,
-            'line-width': layer.width
-          }
-        }, 'osm-tiles');
-
-        // Add click popup for feature info
-        map.on('click', layer.id, (e) => {
-          if (e.features && e.features.length > 0) {
-            // Use specified popupProperty or fallback to first feature property
-            const propertyKey = layer.popupProperty || Object.keys(e.features[0].properties)[0];
-            const propertyValue = e.features[0].properties[propertyKey] || "N/A";
-
-            new maplibregl.Popup()
-              .setLngLat(e.lngLat)
-              .setHTML(`<strong>${propertyKey}:</strong> ${propertyValue}`)
-              .addTo(map);
-          }
-        });
-
-        // Change mouse cursor on hover for layers
-        map.on('mouseenter', layer.id, () => {
-          map.getCanvas().style.cursor = 'pointer';
-        });
-        map.on('mouseleave', layer.id, () => {
-          map.getCanvas().style.cursor = '';
-        });
-      })
-      .catch(error => {
-        console.error(`Failed to load ${layer.file}:`, error);
       });
+
+      return container;
+    }
   });
 
-  // Layer toggle event listeners
-  document.getElementById('toggle-states').addEventListener('change', (e) => {
-    map.setLayoutProperty('states', 'visibility', e.target.checked ? 'visible' : 'none');
-  });
-  document.getElementById('toggle-districts').addEventListener('change', (e) => {
-    map.setLayoutProperty('districts', 'visibility', e.target.checked ? 'visible' : 'none');
-  });
-  document.getElementById('toggle-rivers').addEventListener('change', (e) => {
-    map.setLayoutProperty('rivers', 'visibility', e.target.checked ? 'visible' : 'none');
-  });
-  document.getElementById('toggle-roads').addEventListener('change', (e) => {
-    map.setLayoutProperty('roads', 'visibility', e.target.checked ? 'visible' : 'none');
-  });
+  map.addControl(new StateControl());
 });
