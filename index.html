@@ -1,21 +1,18 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WebGIS Prototype</title>
-  <link href="style.css" rel="stylesheet" />
-  <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
-  <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WebGIS — State Selector</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="map"></div>
-  <div id="menu">
-    <label><input type="checkbox" id="toggle-states" checked> States</label><br>
-    <label><input type="checkbox" id="toggle-districts"> Districts</label><br>
-    <label><input type="checkbox" id="toggle-rivers" checked> Rivers</label><br>
-    <label><input type="checkbox" id="toggle-roads" checked> Roads</label>
-  </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
