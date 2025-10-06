@@ -13,6 +13,16 @@
     <div id="top-bar" class="collapsed">
         <div id="top-bar-header">
             <h1>FRA Atlas</h1>
+            <div id="base-layer-selector">
+                <div class="radio-group base-layer-group">
+                    <input type="radio" id="admin-view-radio" name="base-view" value="administrative" checked>
+                    <label for="admin-view-radio" style="display: inline;">Administrative</label>
+                </div>
+                <div class="radio-group base-layer-group">
+                    <input type="radio" id="sat-view-radio" name="base-view" value="satellite">
+                    <label for="sat-view-radio" style="display: inline;">Satellite</label>
+                </div>
+            </div>
             <button id="collapse-button" aria-expanded="false" aria-controls="control-content">
                 <i class="fas fa-chevron-up"></i>
             </button>
@@ -33,20 +43,32 @@
                 </select>
             </div>
 
+            <div class="control-group">
+                <label for="village-dropdown">Filter Village:</label>
+                <select id="village-dropdown" name="village" disabled>
+                    <option value="" disabled selected>All Villages</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="tehsil-dropdown">Filter Tehsil/Taluka:</label>
+                <select id="tehsil-dropdown" name="tehsil" disabled>
+                    <option value="" disabled selected>All Tehsils</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="tribal-group-dropdown">Filter Tribal Group:</label>
+                <select id="tribal-group-dropdown" name="tribal-group" disabled>
+                    <option value="" disabled selected>All Groups</option>
+                </select>
+            </div>
+
             <hr style="border-color: rgba(255, 255, 255, 0.5); margin: 5px 0;">
 
             <div class="control-group radio-group">
                 <input type="radio" id="boundaries-radio" name="layer-type" value="boundaries" checked>
                 <label for="boundaries-radio" style="display: inline;">State/District Boundaries</label>
-            </div>
-
-            <div class="control-group radio-group">
-                <input type="radio" id="fra-claims-radio" name="layer-type" value="fra-claims">
-                <label for="fra-claims-radio" style="display: inline;">Areas claimed under FRA</label>
-                <div id="date-selector-group">
-                    <label for="claim-date">Data Date:</label>
-                    <input type="date" id="claim-date" name="claim-date" value="2025-07-31" style="width: auto;">
-                </div>
             </div>
 
             <div class="control-group radio-group">
@@ -63,7 +85,12 @@
                 <input type="radio" id="homesteads-radio" name="layer-type" value="homesteads">
                 <label for="homesteads-radio" style="display: inline;">Homesteads</label>
             </div>
-            <div id="status-message" class="status-message"></div>
+            
+            <div class="control-group radio-group">
+                <input type="radio" id="forests-radio" name="layer-type" value="forests">
+                <label for="forests-radio" style="display: inline;">Forest Cover (Land Use)</label>
+            </div>
+            
         </div>
     </div>
     
