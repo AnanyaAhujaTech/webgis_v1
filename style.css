@@ -37,6 +37,29 @@ html, body {
     height: 100%; 
 }
 
+/* NEW: Base Layer Selector Styling */
+#base-layer-selector {
+    position: absolute;
+    left: 60px; /* Position it on the left, respecting padding */
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between the two radio groups */
+    font-size: 0.9em;
+}
+
+.base-layer-group {
+    margin-bottom: 0;
+}
+
+/* Ensure labels in this group are not bold */
+#base-layer-selector label {
+    font-weight: normal; 
+    margin-bottom: 0;
+}
+/* END NEW Base Layer Selector Styling */
+
 #top-bar h1 {
     margin: 0;
     color: #fff;
@@ -47,7 +70,7 @@ html, body {
 #collapse-button {
     position: absolute;
     /* FIX: Set right to 60px to align the button relative to the padding, 
-        making the center of the title appear visually correct. */
+     making the center of the title appear visually correct. */
     right: 60px; 
     top: 50%;
     /* FIX: Remove translateY to allow the icon's container to be centered */
@@ -71,14 +94,37 @@ html, body {
     opacity: 0;
     overflow: hidden;
     transition: max-height 0.3s ease, opacity 0.3s ease;
+    /* Use CSS Grid for horizontal arrangement in expanded view */
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns for dropdowns */
+    gap: 10px; /* Spacing between grid items */
 }
 
 #top-bar:not(.collapsed) #control-content {
-    max-height: 200px; /* Reduced expanded height */
+    /* MODIFIED: Adjusted max-height to fit the removed FRA Claims section (approx 200px) */
+    max-height: 200px; 
     opacity: 1;
-    margin-top: 5px; /* Reduced spacing */
+    margin-top: 5px; 
     padding-bottom: 5px;
 }
+
+/* Ensure select elements span their full grid cell */
+#control-content select {
+    width: 100%;
+}
+
+/* Force elements (HR and radio groups) to span both columns */
+#control-content hr, 
+#control-content .control-group:nth-child(6), /* HR is now the 6th child */
+#control-content .control-group:nth-child(7), /* Boundaries is now the 7th child */
+#control-content .control-group:nth-child(8), /* Crop Land */
+#control-content .control-group:nth-child(9), /* Water Bodies */
+#control-content .control-group:nth-child(10), /* Homesteads */
+#control-content .control-group:nth-child(11) /* Forests */
+{
+    grid-column: 1 / span 2;
+}
+
 
 .control-group {
     margin-bottom: 5px; /* Reduced vertical spacing */
@@ -95,6 +141,7 @@ html, body {
 }
 
 #date-selector-group {
+    /* This element is now technically unused, but keeping styles minimal */
     margin-left: 15px;
     display: flex;
     align-items: center;
@@ -114,7 +161,7 @@ label {
 }
 
 /* Dropdown and Date input styling */
-#state-dropdown, #district-dropdown, #claim-date {
+#state-dropdown, #district-dropdown, #claim-date, #village-dropdown, #tehsil-dropdown, #tribal-group-dropdown {
     padding: 6px; /* Reduced padding */
     border-radius: 4px;
     border: 1px solid #c8e6c9;
@@ -125,21 +172,14 @@ label {
     font-size: 0.9em;
 }
 
-#district-dropdown:disabled {
+#district-dropdown:disabled, #village-dropdown:disabled, #tehsil-dropdown:disabled, #tribal-group-dropdown:disabled {
     background-color: #aaa;
     color: #666;
     cursor: not-allowed;
 }
 
-.status-message {
-    margin-top: 5px;
-    padding: 8px; /* Reduced padding */
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-    min-height: 30px;
-    font-size: 0.8em; /* Smaller font */
-    color: #c8e6c9;
-}
+/* Removed: .status-message styles */
+
 
 /* Map Styling */
 #map {
@@ -150,9 +190,9 @@ label {
     transition: padding-top 0.3s ease, margin-right 0.3s ease;
 }
 
-/* Adjusted to new expanded height */
+/* MODIFIED: Adjusted map padding to match new, reduced expanded height (200px) */
 #top-bar:not(.collapsed) + #map { 
-    padding-top: 190px;
+    padding-top: 200px;
 }
 
 /* --- Statistics Sidebar Styling --- */
@@ -251,10 +291,25 @@ label {
     width: calc(100% - 260px);
 }
 
-/* Responsive adjustment */
+/* Responsive adjustment: Revert to single column for small screens */
 @media (max-width: 768px) {
+    #control-content {
+        grid-template-columns: 1fr; /* Single column on mobile */
+        gap: 5px;
+    }
+    
+    /* All elements span full width on mobile */
+    #control-content > * {
+        grid-column: 1 / span 1 !important; 
+    }
+    
+    /* MODIFIED: Adjusted for smaller number of stacked controls on mobile */
+    #top-bar:not(.collapsed) #control-content {
+        max-height: 500px;
+    }
+    
     #top-bar:not(.collapsed) + #map {
-        padding-top: 300px; /* Adjust for stacked content on small screens */
+        padding-top: 500px; 
     }
     #stats-sidebar {
         width: 100%;
