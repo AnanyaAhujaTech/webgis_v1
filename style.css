@@ -102,7 +102,7 @@ html, body {
 
 #top-bar:not(.collapsed) #control-content {
     /* MODIFIED: Adjusted max-height to fit the removed FRA Claims section (approx 200px) */
-    max-height: 200px; 
+    max-height: 400px; 
     opacity: 1;
     margin-top: 5px; 
     padding-bottom: 5px;
@@ -192,7 +192,7 @@ label {
 
 /* MODIFIED: Adjusted map padding to match new, reduced expanded height (200px) */
 #top-bar:not(.collapsed) + #map { 
-    padding-top: 200px;
+    padding-top: 400px;
 }
 
 /* --- Statistics Sidebar Styling --- */
